@@ -1,12 +1,14 @@
 const mongoose = require("mongoose");
+const config = require("config");
+const debug = require("debug")("development:mongoose");
 
 mongoose
-.connect("mongodb://127.0.0.1:27017/Baglio")
-.then(()=>{
-    console.log("Connected");
-})
-.catch((error)=>{
-    console.log(error);
-});
+    .connect(`${config.get("MONGODB_URI")}/Baglio`)
+    .then(() => {
+        debug("Connected");
+    })
+    .catch((error) => {
+        debug(error);
+    });
 
 module.exports = mongoose.connection;
