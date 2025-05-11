@@ -1,9 +1,7 @@
 const mongoose = require("mongoose");
 
-mongoose.connect("mongoose://127.0.0.1:2701/Baglio");
-
 const userSchema = mongoose.Schema({
-    fullName: Sting,
+    fullName: String,
     email: String,
     password: String,
     cart: {
