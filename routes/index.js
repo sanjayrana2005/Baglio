@@ -5,12 +5,8 @@ const router = express.Router();
 
 router.get("/", (req, res) => {
      let error = req.flash("error");
-     res.render("index", { error: [] });
+     res.render("index", { error: [], isLoggedIn :false });
 });
 
-router.get("/shop", isLoggedIn, async (req, res) => {
-     let products = await productModel.find();
-     res.render("shop",{products});
-})
 
 module.exports = router;

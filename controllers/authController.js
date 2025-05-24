@@ -2,6 +2,9 @@ const userModel = require("../models/user-model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { generateToken } = require("../utils/generateToken");
+const productModel = require("../models/product-model");
+const isLoggedIn = require("../middleware/isLoggedIn");
+
 
 module.exports.registerUser = async (req, res) => {
     try {
@@ -37,16 +40,32 @@ module.exports.loginUser = async (req, res) => {
     let { email, password } = req.body;
     let user = await userModel.findOne({ email: email });
 
-    if (!user) return res.send("email or password incprrect");
+    if (!user) {
+        let error = req.flash("error");
+        return res.render("index", { error: [], isLoggedIn:false });
+    }
 
-    bcrypt.compare(password, user.password, (err, result) => {
+
+    bcrypt.compare(password, user.password, async (err, result) => {
         if (result) {
             let token = generateToken(user);
             res.cookie("token", token);
-            res.send("you can login");
+            // req.flash("success","logged in");
+            // res.render("shop",{success});
+            const productList = await productModel.find();
+
+            res.redirect("/shop");
         }
         else {
             res.send("email or passord wrong");
         }
     });
 }
+
+
+module.exports.logoutUser = (req,res) =>{
+    res.cookie("token","");
+    res.redirect("/");
+}
+
+
